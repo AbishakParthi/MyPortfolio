@@ -17,13 +17,39 @@ const navLinks = [
 export function Navbar() {
   const [isScrolled, setIsScrolled] = React.useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
+  const [activeSection, setActiveSection] = React.useState("#")
 
   React.useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50)
+      if (window.scrollY < 100) {
+        setActiveSection('#')
+      }
     }
     window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(`#${entry.target.id}`)
+          }
+        })
+      },
+      { rootMargin: "-30% 0px -70% 0px" }
+    )
+
+    navLinks.forEach((link) => {
+      if (link.href.startsWith('#') && link.href !== '#') {
+        const target = document.querySelector(link.href)
+        if (target) observer.observe(target)
+      }
+    })
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll)
+      observer.disconnect()
+    }
   }, [])
 
   const handleScrollTo = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -67,10 +93,16 @@ export function Navbar() {
                 key={link.name}
                 href={link.href}
                 onClick={(e) => handleScrollTo(e, link.href)}
-                className="text-sm font-medium text-gray-300 hover:text-white transition-colors relative group"
+                className={cn(
+                  "text-sm font-medium transition-colors relative group",
+                  activeSection === link.href ? "text-white" : "text-gray-300 hover:text-white"
+                )}
               >
                 {link.name}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-electric-blue transition-all group-hover:w-full" />
+                <span className={cn(
+                  "absolute -bottom-1 left-0 h-0.5 bg-electric-blue transition-all",
+                  activeSection === link.href ? "w-full" : "w-0 group-hover:w-full"
+                )} />
               </a>
             ))}
           </nav>
@@ -110,7 +142,10 @@ export function Navbar() {
                   key={link.name}
                   href={link.href}
                   onClick={(e) => handleScrollTo(e, link.href)}
-                  className="text-lg font-medium text-gray-300 hover:text-white transition-colors py-2"
+                  className={cn(
+                    "text-lg font-medium transition-colors py-2",
+                    activeSection === link.href ? "text-electric-blue" : "text-gray-300 hover:text-white"
+                  )}
                 >
                   {link.name}
                 </a>
