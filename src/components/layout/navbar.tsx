@@ -26,71 +26,91 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
+  const handleScrollTo = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    setMobileMenuOpen(false);
+
+    if (href === '#') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    const target = document.querySelector(href);
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <motion.header
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        isScrolled ? "py-4 glass border-b-0 shadow-lg" : "py-6 bg-transparent"
-      )}
+      className="fixed top-0 left-0 right-0 z-50 flex flex-col"
     >
-      <div className="container mx-auto px-6 md:px-12 flex items-center justify-between">
-        <a href="#" className="text-2xl font-bold font-space-grotesk tracking-tighter flex items-baseline">
-          <span className="text-gradient">AP</span>
-          <span className="text-white -ml-[2px]">.</span>
-        </a>
+      <div
+        className={cn(
+          "transition-all duration-300 w-full",
+          isScrolled ? "py-4 glass border-b-0 shadow-lg" : "py-6 bg-transparent"
+        )}
+      >
+        <div className="container mx-auto px-6 md:px-12 flex items-center justify-between relative">
+          <a href="#" onClick={(e) => handleScrollTo(e, '#')} className="text-2xl font-bold font-space-grotesk tracking-tighter flex items-baseline">
+            <span className="text-gradient">AP</span>
+            <span className="text-white -ml-[2px]">.</span>
+          </a>
 
-        {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center space-x-8">
-          {navLinks.map((link) => (
-            <a
-              key={link.name}
-              href={link.href}
-              className="text-sm font-medium text-gray-300 hover:text-white transition-colors relative group"
+          {/* Desktop Nav */}
+          <nav className="hidden md:flex items-center space-x-8">
+            {navLinks.map((link) => (
+              <a
+                key={link.name}
+                href={link.href}
+                onClick={(e) => handleScrollTo(e, link.href)}
+                className="text-sm font-medium text-gray-300 hover:text-white transition-colors relative group"
+              >
+                {link.name}
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-electric-blue transition-all group-hover:w-full" />
+              </a>
+            ))}
+          </nav>
+
+          <div className="hidden md:flex items-center space-x-4">
+            <button 
+              onClick={() => window.dispatchEvent(new Event("open-command-palette"))}
+              className="p-2 text-gray-300 hover:text-white transition-colors flex items-center gap-2 text-sm border border-white/10 rounded-full px-4 glass"
             >
-              {link.name}
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-electric-blue transition-all group-hover:w-full" />
-            </a>
-          ))}
-        </nav>
+              <Command className="w-4 h-4" />
+              <span>Cmd + K</span>
+            </button>
+          </div>
 
-        <div className="hidden md:flex items-center space-x-4">
-          <button 
-            onClick={() => window.dispatchEvent(new Event("open-command-palette"))}
-            className="p-2 text-gray-300 hover:text-white transition-colors flex items-center gap-2 text-sm border border-white/10 rounded-full px-4 glass"
+          {/* Mobile Toggle */}
+          <button
+            className="md:hidden text-gray-300 p-2"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
-            <Command className="w-4 h-4" />
-            <span>Cmd + K</span>
+            {mobileMenuOpen ? <X /> : <Menu />}
           </button>
         </div>
-
-        {/* Mobile Toggle */}
-        <button
-          className="md:hidden text-gray-300 p-2"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        >
-          {mobileMenuOpen ? <X /> : <Menu />}
-        </button>
       </div>
 
       {/* Mobile Menu */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden glass border-t border-white/10 mt-4 overflow-hidden"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="md:hidden w-full glass border-t-0 shadow-2xl overflow-hidden"
           >
             <nav className="flex flex-col p-6 space-y-4 text-center">
               {navLinks.map((link) => (
                 <a
                   key={link.name}
                   href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="text-lg font-medium text-gray-300 hover:text-white transition-colors"
+                  onClick={(e) => handleScrollTo(e, link.href)}
+                  className="text-lg font-medium text-gray-300 hover:text-white transition-colors py-2"
                 >
                   {link.name}
                 </a>
