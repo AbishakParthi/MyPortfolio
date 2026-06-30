@@ -107,23 +107,23 @@ export function Navbar() {
             ))}
           </nav>
 
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="flex items-center space-x-3 md:space-x-4">
             <button 
               onClick={() => window.dispatchEvent(new Event("open-command-palette"))}
-              className="p-2 text-gray-300 hover:text-white transition-colors flex items-center gap-2 text-sm border border-white/10 rounded-full px-4 glass"
+              className="p-2 md:px-4 text-gray-300 hover:text-white transition-colors flex items-center gap-2 text-sm border border-white/10 rounded-full glass"
             >
               <Command className="w-4 h-4" />
-              <span>Cmd + K</span>
+              <span className="hidden md:inline">Cmd + K</span>
+            </button>
+
+            {/* Mobile Toggle */}
+            <button
+              className="md:hidden text-gray-300 p-2"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? <X /> : <Menu />}
             </button>
           </div>
-
-          {/* Mobile Toggle */}
-          <button
-            className="md:hidden text-gray-300 p-2"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? <X /> : <Menu />}
-          </button>
         </div>
       </div>
 

@@ -5,7 +5,7 @@ import { motion } from "framer-motion"
 import { SectionHeading } from "@/components/ui/section-heading"
 import { GlassCard } from "@/components/ui/glass-card"
 import { MagneticButton } from "@/components/ui/magnetic-button"
-import { Send, CheckCircle2 } from "lucide-react"
+import { Send, CheckCircle2, MapPin, Phone } from "lucide-react"
 import emailjs from "@emailjs/browser"
 
 export function Contact() {
@@ -50,7 +50,18 @@ export function Contact() {
       <div className="container mx-auto px-6 md:px-12 relative z-10">
         <SectionHeading title="Let's Connect" subtitle="Have a project in mind or just want to say hi? I'd love to hear from you." />
         
-        <div className="max-w-2xl mx-auto mt-12">
+        <div className="flex flex-col md:flex-row justify-center items-center gap-6 md:gap-12 mt-8 mb-10">
+          <div className="flex items-center text-gray-300">
+            <MapPin className="w-5 h-5 text-electric-blue mr-3" />
+            <span className="font-medium">Chennai, Tamil Nadu, India</span>
+          </div>
+          <div className="flex items-center text-gray-300">
+            <Phone className="w-5 h-5 text-purple-500 mr-3" />
+            <span className="font-medium">+91 9025772291</span>
+          </div>
+        </div>
+        
+        <div className="max-w-2xl mx-auto">
           <GlassCard>
             {isSuccess ? (
               <motion.div 
